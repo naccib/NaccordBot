@@ -23,7 +23,7 @@ namespace DiscordBot.IO
             get;
             private set;
         }
-        public static List<ulong> IgnoredUsers;
+        //public static List<ulong> IgnoredUsers;
 
         public static void Initialize()
         {
@@ -38,8 +38,14 @@ namespace DiscordBot.IO
             string content = File.ReadAllText(SETTINGS_FILE_PATH);
             Settings loaded = JsonConvert.DeserializeObject<Settings>(content);
 
-            Token = loaded.Token ?? "invalid_token";
-            IgnoredUsers = loaded.Ignored.ToList();
+            if (loaded == null)
+                loaded = new Settings()
+                {
+                    Token = "MjA5MzI3MDE1MzY1NTc0NjU2.Cn--PA.qg7EU8p7RBQuiyjWwqYMW-_ZmTQ"
+                };
+
+            Token = loaded?.Token ?? "invalid_token";
+            //IgnoredUsers = loaded.Ignored.ToList();
 
             if (Token != "invalid_token")
                 IOChannel.Write("Achei a token {0}.", Token);

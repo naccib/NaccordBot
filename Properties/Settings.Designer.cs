@@ -70,5 +70,88 @@ namespace DiscordBot.Properties {
                 this["AdminRoleName"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("{0},  sua graça é mais ausente que pai de feminista.\r\n{0}, sua mãe é tão gorda qu" +
+            "e dps de comer ela tive que girar 7 vezes pro lado pra descer da cama\r\n{0}, esse" +
+            " insulto custou 2 dólares e 3 centavos")]
+        public string Quotes {
+            get {
+                return ((string)(this["Quotes"]));
+            }
+            set {
+                this["Quotes"] = value;
+            }
+        }
+        
+        [global::System.Configuration.ApplicationScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("ctYM6Ww1rRd5ESy4j2RMdOIBx")]
+        public string TWITTER_CONSUMER_KEY {
+            get {
+                return ((string)(this["TWITTER_CONSUMER_KEY"]));
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("XStYMHoG4JybWLr8TwKh6FNp1hHdMtKgAEddQ9mIhXkN9GWpnn")]
+        public string TWITTER_CONSUMER_SECRET {
+            get {
+                return ((string)(this["TWITTER_CONSUMER_SECRET"]));
+            }
+            set {
+                this["TWITTER_CONSUMER_SECRET"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("598328802-P7QhTFsH5Sl61N23aK1EYO4jTUPz7wFRcmWUS7Jf")]
+        public string TWITTER_AC {
+            get {
+                return ((string)(this["TWITTER_AC"]));
+            }
+            set {
+                this["TWITTER_AC"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("uvGuhFfs1fJ7RADxQxPl7sHvDQLTqRFeMqR1DP28WfFm2")]
+        public string TWITTER_AC_SECRET {
+            get {
+                return ((string)(this["TWITTER_AC_SECRET"]));
+            }
+            set {
+                this["TWITTER_AC_SECRET"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string TwitterAccounts {
+            get {
+                return ((string)(this["TwitterAccounts"]));
+            }
+            set {
+                this["TwitterAccounts"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("{0}, você é top.\r\n")]
+        public string CatchLines {
+            get {
+                return ((string)(this["CatchLines"]));
+            }
+            set {
+                this["CatchLines"] = value;
+            }
+        }
     }
 }

@@ -46,8 +46,7 @@ namespace DiscordBot.Games
         private static Dictionary<string, string> CurrentUserAnswers = new Dictionary<string, string>();
         private static bool ChooseTime = false;
 
-
-        public static void Initialize(DiscordClient client, Server serv)
+        public static void Initialize(DiscordClient client, Server serv, bool silent = false)
         {
             CAHChannel.Write("Começando no servidor {0}...", serv.Name);
 
@@ -69,7 +68,7 @@ namespace DiscordBot.Games
             if (discordChannel == null) // não existe
             {
                 CAHChannel.Write("Canal não encontrado, criando um novo...");
-                CreateChannel();
+                CreateChannel(silent);
             }
             else
             {
@@ -82,7 +81,7 @@ namespace DiscordBot.Games
         private static bool UpdatePlayers()
         {
             Players = MainChannel.Users.Where(x => x.HasRole(PlayerRole)).ToList();
-            Players.Shuffle(); // sort the players
+            if(RoundNumber == 1) Players.Shuffle(); // sort the players once
         
             CAHChannel.Write("Achei {0} jogadores.", Players.Count);
 
@@ -101,10 +100,13 @@ namespace DiscordBot.Games
                     Points.Add(user.Name, 0);
             }
 
+            Task editTopic = new Task(async () => await MainChannel.Edit(topic: GetTopic()));
+            editTopic.Start();
+
             return true;
         }
 
-        private static void CreatePlayerRole()
+        public static Role CreatePlayerRole()
         {
             if (MainServer.Roles.Where(x => x.Name == "Player").Count() > 0)
                 PlayerRole = MainServer.Roles.First(x => x.Name == "Player");
@@ -112,6 +114,8 @@ namespace DiscordBot.Games
                 PlayerRole = MainServer.CreateRole("Player", null, null, true, true).Result;
 
             CAHChannel.Write("Criei/achei role 'Player'.");
+
+            return PlayerRole;
         }
 
         public static void ResetRole()
@@ -129,10 +133,17 @@ namespace DiscordBot.Games
 
         public static List<User> UsersThatHaveRole(string roleName)
         {
-            List<User> l = MainServer.Users.Where(x => x.HasRole(MainServer.Roles.FirstOrDefault(y => y.Name == roleName))).ToList();
-            CAHChannel.Write("Found {0} usrs with role {1}.", l.Count, roleName);
+            try
+            {
+                List<User> l = MainServer.Users.Where(x => x.HasRole(MainServer.Roles.FirstOrDefault(y => y.Name == roleName))).ToList();
+                CAHChannel.Write("Found {0} usrs with role {1}.", l.Count, roleName);
 
-            return l;
+                return l;
+            }
+            catch
+            {
+                return new List<User>();
+            }
         }
 
         public static void StartGame()
@@ -255,12 +266,50 @@ namespace DiscordBot.Games
             return czar.Mention;
         }
 
-        public static void CreateChannel()
+        private static string GetTopic()
+        {
+            StringBuilder builder = new StringBuilder();
+            List<User> players = UsersThatHaveRole("Player");
+
+            if (players.Count < 2)
+                return "You need at least 2 players to play this game.\nPlayers can be added with `/role player`.";
+
+            builder.Append("Players: ");
+
+            foreach(User player in players)
+            {
+                if (players.Last() == player)
+                    builder.Append(player.Mention + ".");
+                else
+                    builder.Append(player.Mention + ", ");
+            }
+
+            return builder.ToString();
+        }
+
+        public static void CreateChannel(bool silent)
         {
             MainChannel = MainServer.CreateChannel(CHANNEL_NAME, ChannelType.Text).Result;
 
+            Wrapper.SendMessageAsync(MainChannel, "Hey! Bem vindo ao **C**ards **A**gainst **H**umanity, feito pelo " + Wrapper.GetMention("naccib", MainChannel) + ".\n\nO source code está no GitHub: https://github.com/naccib/NaccordBot. \nSiga o naccib no Twitter: https://twitter.com/vlwvlwvlwvlwvlw.");
+
+            Task changeTopic = new Task(async () => await MainChannel.Edit(topic: GetTopic()));
+            changeTopic.Start();
+
             CreatePlayerRole();
+            if(!silent) TrySendInviteAsync();     
+
             StartGame();
+        }
+
+        public static void TrySendInviteAsync()
+        {
+            Channel mainCh = MainServer.TextChannels.FirstOrDefault(x => x.Name == "geral" || x.Name == "general");
+
+            if (mainCh == null)
+                return;
+
+            Wrapper.SendMessageAsync(mainCh, "Opa! Ta rolando um **C**ards **A**gainst **H**umanity no " + MainChannel.Mention + "!\nDigite `/role player` e vá para o canal " + MainChannel.Mention + " para jogar!");
         }
 
         public static void DeleteChannel()
@@ -268,9 +317,9 @@ namespace DiscordBot.Games
             MainChannel.Delete();
         }
 
-        public static void Choose(string username, User sender)
+        public static void Choose(string username, User sender, bool force = false)
         {
-            if(sender.Id != CzarID)
+            if(sender.Id != CzarID && !force)
             {
                 CAHChannel.Write("Alguem tentou escolher pelo czar.");
                 Wrapper.SendMessageAsync(sender, "Você não é o czar para escolher o usuário!");
@@ -309,8 +358,32 @@ namespace DiscordBot.Games
                 CAHChannel.Write("Could not find user {0} in Points list.", username);
             }
 
+            Wrapper.SendMessageAsync(MainChannel, GetPlayersFormatted());
+
             ChooseTime = false;
             EndRound();
+        }
+
+        private static string GetPlayersFormatted()
+        {
+            StringBuilder resultado = new StringBuilder();
+
+            resultado.AppendLine("Pontuação: ```");
+
+            foreach(var player in Players)
+            {
+                if (!Points.ContainsKey(player.Name))
+                    Points.Add(player.Name, 0);
+
+                resultado.AppendFormat("{0} - {1}\n", player.Name, Points[player.Name]);
+            }
+
+            resultado.Append("```");
+
+            if (resultado.Length > 2000)
+                return "Muito grande.";
+
+            return resultado.ToString();
         }
 
         public static void EndRound()
@@ -328,6 +401,24 @@ namespace DiscordBot.Games
                 Wrapper.IsGameRunning = false;
                 ResetRole();
             }
+        }
+
+        public static void ForceEnd()
+        {
+            PlayersThatAnswered = Players.Count() - 1;
+        }
+
+        public static void ResetPlayers()
+        {
+            Task deleteTask = new Task(async () =>
+            {
+                await PlayerRole.Delete();
+                CreatePlayerRole();
+
+                Wrapper.SendMessageAsync(MainChannel, "**Limpando jogadores!**\n\nSe você deseja continuar jogando, digite `/role player`.");
+            });
+
+            deleteTask.Start();
         }
 
         private static Random rng = new Random();

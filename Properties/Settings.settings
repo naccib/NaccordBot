@@ -14,5 +14,29 @@
     <Setting Name="AdminRoleName" Type="System.String" Scope="User">
       <Value Profile="(Default)">Administrador</Value>
     </Setting>
+    <Setting Name="Quotes" Type="System.String" Scope="User">
+      <Value Profile="(Default)">{0},  sua graça é mais ausente que pai de feminista.
+{0}, sua mãe é tão gorda que dps de comer ela tive que girar 7 vezes pro lado pra descer da cama
+{0}, esse insulto custou 2 dólares e 3 centavos</Value>
+    </Setting>
+    <Setting Name="TWITTER_CONSUMER_KEY" Type="System.String" Scope="Application">
+      <Value Profile="(Default)">ctYM6Ww1rRd5ESy4j2RMdOIBx</Value>
+    </Setting>
+    <Setting Name="TWITTER_CONSUMER_SECRET" Type="System.String" Scope="User">
+      <Value Profile="(Default)">XStYMHoG4JybWLr8TwKh6FNp1hHdMtKgAEddQ9mIhXkN9GWpnn</Value>
+    </Setting>
+    <Setting Name="TWITTER_AC" Type="System.String" Scope="User">
+      <Value Profile="(Default)">598328802-P7QhTFsH5Sl61N23aK1EYO4jTUPz7wFRcmWUS7Jf</Value>
+    </Setting>
+    <Setting Name="TWITTER_AC_SECRET" Type="System.String" Scope="User">
+      <Value Profile="(Default)">uvGuhFfs1fJ7RADxQxPl7sHvDQLTqRFeMqR1DP28WfFm2</Value>
+    </Setting>
+    <Setting Name="TwitterAccounts" Type="System.String" Scope="User">
+      <Value Profile="(Default)" />
+    </Setting>
+    <Setting Name="CatchLines" Type="System.String" Scope="User">
+      <Value Profile="(Default)">{0}, você é top.
+</Value>
+    </Setting>
   </Settings>
 </SettingsFile>
