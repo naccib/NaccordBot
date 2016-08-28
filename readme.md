@@ -6,10 +6,12 @@ Features
 Here is the feature list:
 >Roles
 >Cards Against Humanity! :D
->Python Interpreter (yet to come)
->Math expression evaluation (yet to come)
->Music bot (yet to come)
->Usef info grabber (yer to come)
+>Memes!
+>LaTeX Equation parser
+>Math expression parser
+>Offense and catch lines support
+>Google search
+>Emojify! :D
 
 About naccib
 -
